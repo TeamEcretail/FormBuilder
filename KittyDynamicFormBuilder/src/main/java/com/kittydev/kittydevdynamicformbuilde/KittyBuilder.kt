@@ -447,6 +447,9 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         }
         return myvalue
     }
+   public fun reset(){
+        linearLayout.removeAllViews()
+    }
 
 }
 
