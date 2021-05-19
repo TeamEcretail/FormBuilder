@@ -2,6 +2,7 @@ package com.kittydev.kittydevdynamicformbuilde
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
 import android.text.InputType
 import android.view.LayoutInflater
@@ -9,10 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.drawToBitmap
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.kittydev.kittydevdynamicformbuilde.Model.attributeDM
+import kotlinx.android.synthetic.main.input.view.*
 import java.util.*
 
 class KittyBuilder(private var context: Context, private var linearLayout: LinearLayout) {
@@ -46,7 +52,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
 
                 val InputTextSpacer = InputTextView.findViewById<View>(R.id.input_et_spacer)
 
-                val RightRefreshBtn = InputTextView.findViewById<View>(R.id.rSButton)
+                val RightRefreshBtn = InputTextView.findViewById<View>(R.id.image)
 
                 val InputTextSubHeadingHolder =
                     InputTextView.findViewById<LinearLayout>(R.id.subHeadingHolder)
@@ -76,6 +82,9 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
 
                 if (kittyElements.attributes.isRefreshBtn) {
                     RightRefreshBtn.visibility = View.VISIBLE
+                    kittyElements.attributes.drawable?.let {
+                        RightRefreshBtn.setBackgroundResource(it)
+                    }
                 } else {
                     RightRefreshBtn.visibility = View.GONE
                 }
@@ -119,7 +128,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 val DropDownSubHeadingHolder =
                     DropDownView.findViewById<LinearLayout>(R.id.subHeadingHolder)
 
-                DropDownLayoutHolder.hint = kittyElements.attributes.hint + "C"
+                DropDownLayoutHolder.hint = kittyElements.attributes.hint
                 DropDownEditText.isEnabled = kittyElements.attributes.isEnabled
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
@@ -447,7 +456,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         }
         return myvalue
     }
-   public fun reset(){
+   fun reset(){
         linearLayout.removeAllViews()
     }
 

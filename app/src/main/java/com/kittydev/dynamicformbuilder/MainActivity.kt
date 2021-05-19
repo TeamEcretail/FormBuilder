@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
                     hint = "sample",
                     heading = "Multi",
                     isRefreshBtn = true,
+                    drawable=R.drawable.ic_baseline_refresh_24,
                     refreshListener = _refreshListner
                 )
             )

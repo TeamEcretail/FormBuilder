@@ -1,5 +1,6 @@
 package com.kittydev.kittydevdynamicformbuilde.Model
 
+
 import android.widget.LinearLayout
 import androidx.lifecycle.MutableLiveData
 import com.kittydev.kittydevdynamicformbuilde.KittyElements
@@ -18,5 +19,6 @@ data class attributeDM(
     var isEnabled: Boolean = true,
     val params: LinearLayout.LayoutParams? = null,
     val valueListener: MutableLiveData<String>? = null,
-    val refreshListener: MutableLiveData<String>? = null
+    val refreshListener: MutableLiveData<String>? = null,
+    val drawable: Int ?=0
 )
