@@ -1,4 +1,4 @@
-package com.Formbuilder.dynamicformbuilder
+package com.kittydev.dynamicformbuilder
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.Formbuilder.dynamicformbuilder
+package com.kittydev.dynamicformbuilder
 
 import android.graphics.Color
 import android.os.Bundle
@@ -8,11 +8,11 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.Formbuilder.kittydevdynamicformbuilde.KittyBuilder
-import com.Formbuilder.kittydevdynamicformbuilde.KittyButton
-import com.Formbuilder.kittydevdynamicformbuilde.KittyElements
-import com.Formbuilder.kittydevdynamicformbuilde.KittyObject
-import com.Formbuilder.kittydevdynamicformbuilde.Model.attributeDM
+import com.kittydev.kittydevdynamicformbuilde.KittyBuilder
+import com.kittydev.kittydevdynamicformbuilde.KittyButton
+import com.kittydev.kittydevdynamicformbuilde.KittyElements
+import com.kittydev.kittydevdynamicformbuilde.KittyObject
+import com.kittydev.kittydevdynamicformbuilde.Model.attributeDM
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
