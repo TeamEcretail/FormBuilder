@@ -1,0 +1,3 @@
+include ':KittyDynamicFormBuilder'
+include ':app'
+rootProject.name = "DynamicFormBuilder"
