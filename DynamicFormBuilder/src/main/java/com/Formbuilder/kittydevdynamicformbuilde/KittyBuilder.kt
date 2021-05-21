@@ -20,6 +20,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.kittydev.kittydevdynamicformbuilde.Model.attributeDM
 import kotlinx.android.synthetic.main.input.view.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class KittyBuilder(private var context: Context, private var linearLayout: LinearLayout) {
     private var formMap: LinkedHashMap<String, KittyElements> = LinkedHashMap()
@@ -199,7 +200,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 val DropDownSubHeadingHolder =
                     DropDownView.findViewById<LinearLayout>(R.id.subHeadingHolder)
 
-                DropDownLayoutHolder.hint = kittyElements.attributes.hint + "C"
+                DropDownLayoutHolder.hint = kittyElements.attributes.hint
                 DropDownEditText.isEnabled = kittyElements.attributes.isEnabled
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
@@ -355,7 +356,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         this.selectedEditText = selectedEditText
         val builder = AlertDialog.Builder(context)
 
-        builder.setTitle(selectedKittyElements.attributes.hint + " Single Select")
+        builder.setTitle(selectedKittyElements.attributes.hint)
 
         builder.setSingleChoiceItems(
             selectedKittyElements.attributes.options!!.toTypedArray<CharSequence>(),
@@ -382,10 +383,17 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         selectedEditText: EditText,
         selectedKittyElements: KittyElements
     ) {
-        val selectedElements = ArrayList(selectedKittyElements.attributes.selectedOptions)
+        var selectedElements:ArrayList<String> = ArrayList(listOf(""))
+
+        selectedKittyElements.attributes.selectedOptions?.let {
+            selectedElements = ArrayList(it)
+        }
+
+
+
         this.selectedEditText = selectedEditText
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(selectedKittyElements.attributes.hint + " Multi Select")
+        builder.setTitle(selectedKittyElements.attributes.hint)
 
         val options = selectedKittyElements.attributes.options!!.toTypedArray()
         val arrayChecked = selectedKittyElements.attributes.selectedOptions?.let {
