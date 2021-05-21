@@ -28,8 +28,8 @@ class MainActivity : AppCompatActivity() {
 
         val sample: ArrayList<String> = ArrayList()
         sample.add("meow")
-        sample.add("meow1")
-        sample.add("meow2")
+
+
 
         sas.add(
             KittyElements().setArguments(
