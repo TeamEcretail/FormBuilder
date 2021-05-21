@@ -1,0 +1,2 @@
+com/kittydev/kittydevdynamicformbuilde/BuildConfig.java
+ com.kittydev.kittydevdynamicformbuilde.BuildConfig
