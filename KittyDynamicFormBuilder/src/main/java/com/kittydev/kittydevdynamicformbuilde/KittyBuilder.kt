@@ -422,6 +422,9 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
             dialogInterface.dismiss()
             selectedElements.clear()
             arrayChecked?.forEachIndexed { i, it ->
+
+                Log.e("adad","$i     $it")
+
                 if (it) {
                     selectedElements.add(selectedKittyElements.attributes.options!![i])
                 }
