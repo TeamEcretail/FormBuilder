@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -393,7 +394,9 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         selectedEditText: EditText,
         selectedKittyElements: KittyElements
     ) {
+
         var selectedElements: ArrayList<String> = ArrayList(listOf(""))
+
         selectedKittyElements.attributes.selectedOptions?.let {
             selectedElements = ArrayList(it)
         }
@@ -403,6 +406,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         builder.setTitle(selectedKittyElements.attributes.hint)
 
         val options = selectedKittyElements.attributes.options!!.toTypedArray()
+
         val arrayChecked = selectedKittyElements.attributes.selectedOptions?.let {
             getSelected(
                 selectedKittyElements.attributes.options!!,
@@ -425,7 +429,12 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
 
             selectedKittyElements.attributes.selectedOptions = selectedElements.toList()
 
+            Log.e("akdjah", selectedKittyElements.attributes.selectedOptions.toString())
+
             selectedEditText.setText(
+
+
+
                 selectedKittyElements.attributes.selectedOptions.toString().replace("[", "")
                     .replace("]", "")
             )
