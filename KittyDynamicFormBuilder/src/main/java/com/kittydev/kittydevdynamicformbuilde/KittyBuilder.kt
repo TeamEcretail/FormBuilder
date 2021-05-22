@@ -210,10 +210,18 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
 
                 DropDownEditText.inputType = InputType.TYPE_CLASS_TEXT
 
-                DropDownEditText.setText(
-                    kittyElements.attributes.selectedOptions.toString().replace("[", "")
-                        .replace("]", "")
-                )
+
+
+                kittyElements.attributes.selectedOptions?.let {
+                    if (it.isNotEmpty() && it[0].length > 1) {
+                        DropDownEditText.setText(
+                            kittyElements.attributes.selectedOptions.toString().replace("[", "")
+                                .replace("]", "")
+                        )
+                    } else {
+                        DropDownEditText.setText("")
+                    }
+                }
 
                 DropDownEditText.setOnClickListener {
 
@@ -350,7 +358,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
     }
 
     private fun selectDialog(selectedEditText: EditText, selectedKittyElements: KittyElements) {
-        var selectedElements:ArrayList<String> = ArrayList(listOf(""))
+        var selectedElements: ArrayList<String> = ArrayList(listOf(""))
         selectedKittyElements.attributes.selectedOptions?.let {
             selectedElements = ArrayList(it)
         }
@@ -385,7 +393,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         selectedEditText: EditText,
         selectedKittyElements: KittyElements
     ) {
-        var selectedElements:ArrayList<String> = ArrayList(listOf(""))
+        var selectedElements: ArrayList<String> = ArrayList(listOf(""))
         selectedKittyElements.attributes.selectedOptions?.let {
             selectedElements = ArrayList(it)
         }
@@ -463,7 +471,8 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         }
         return myvalue
     }
-   fun reset(){
+
+    fun reset() {
         linearLayout.removeAllViews()
     }
 
