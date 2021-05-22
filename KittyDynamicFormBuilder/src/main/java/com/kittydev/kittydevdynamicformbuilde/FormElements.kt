@@ -5,9 +5,9 @@ import com.kittydev.kittydevdynamicformbuilde.Model.attributeDM
 /**
  * Created by PadmaDev on 07/10/2020
  */
-class KittyElements : KittyObject() {
+class FormElements : FormObject() {
     lateinit var attributes: attributeDM
-    fun setArguments(arr: attributeDM): KittyElements {
+    fun setArguments(arr: attributeDM): FormElements {
         this.attributes = arr
         return this
     }

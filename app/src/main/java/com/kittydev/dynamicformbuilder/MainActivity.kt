@@ -8,10 +8,10 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.kittydev.kittydevdynamicformbuilde.KittyBuilder
-import com.kittydev.kittydevdynamicformbuilde.KittyButton
-import com.kittydev.kittydevdynamicformbuilde.KittyElements
-import com.kittydev.kittydevdynamicformbuilde.KittyObject
+import com.kittydev.kittydevdynamicformbuilde.FormBuilder
+import com.kittydev.kittydevdynamicformbuilde.FormButton
+import com.kittydev.kittydevdynamicformbuilde.FormElements
+import com.kittydev.kittydevdynamicformbuilde.FormObject
 import com.kittydev.kittydevdynamicformbuilde.Model.attributeDM
 
 class MainActivity : AppCompatActivity() {
@@ -19,9 +19,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val list: ArrayList<String> = ArrayList();
-        val sas: ArrayList<KittyObject> = ArrayList()
+        val sas: ArrayList<FormObject> = ArrayList()
         val mLinearLayout = findViewById<View>(R.id.TableLayout1) as LinearLayout
-        val kittyBuilder: KittyBuilder = KittyBuilder(this, mLinearLayout)
+        val formBuilder: FormBuilder = FormBuilder(this, mLinearLayout)
 
         //val _etListner = MutableLiveData<String>()
         val _refreshListner = MutableLiveData<String>()
@@ -34,10 +34,10 @@ class MainActivity : AppCompatActivity() {
 
         val _etListner = MutableLiveData<String>()
         sas.add(
-            KittyElements().setArguments(
+            FormElements().setArguments(
                 attributeDM(
                     tag = "et1",
-                    type = KittyElements.Type.MULTISELECT,
+                    type = FormElements.Type.MULTISELECT,
                     valueListener = _etListner,
                     hint = "sample multi",
                     heading = "Multi",
@@ -52,10 +52,10 @@ class MainActivity : AppCompatActivity() {
             Log.e("kittydev", "Fromm Main Act : -->  " + it)
         })
         sas.add(
-            KittyElements().setArguments(
+            FormElements().setArguments(
                 attributeDM(
                     tag = "et1",
-                    type = KittyElements.Type.TEXT,
+                    type = FormElements.Type.TEXT,
                     valueListener = _etListner,
                     hint = "sample",
                     heading = "Multi",
@@ -68,10 +68,10 @@ class MainActivity : AppCompatActivity() {
 
 
         sas.add(
-            KittyElements().setArguments(
+            FormElements().setArguments(
                 attributeDM(
                     tag = "et2",
-                    type = KittyElements.Type.TEXT,
+                    type = FormElements.Type.TEXT,
                     hint = "sample 2",
                 )
             )
@@ -91,13 +91,13 @@ class MainActivity : AppCompatActivity() {
 
 
         sas.add(
-            KittyButton().setTitle("submit").setBackgroundColor(Color.parseColor("#1a237e"))
+            FormButton().setTitle("submit").setBackgroundColor(Color.parseColor("#1a237e"))
                 .setTextColor(Color.WHITE).setRunnable {
                     Log.e("Kittydev", "Clicked")
                 })
 
-        val kittyObjects: List<KittyObject> = sas
-        kittyBuilder.build(kittyObjects)
+        val formObjects: List<FormObject> = sas
+        formBuilder.build(formObjects)
 
     }
 }

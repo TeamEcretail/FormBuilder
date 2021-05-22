@@ -2,7 +2,6 @@ package com.kittydev.kittydevdynamicformbuilde
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.res.Resources
 import android.os.Build
 import android.text.InputType
 import android.util.Log
@@ -11,35 +10,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.drawToBitmap
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.kittydev.kittydevdynamicformbuilde.Model.attributeDM
-import kotlinx.android.synthetic.main.input.view.*
 import java.util.*
 
-class KittyBuilder(private var context: Context, private var linearLayout: LinearLayout) {
-    private var formMap: LinkedHashMap<String, KittyElements> = LinkedHashMap()
+class FormBuilder(private var context: Context, private var linearLayout: LinearLayout) {
+    private var formMap: LinkedHashMap<String, FormElements> = LinkedHashMap()
     private var viewMap: LinkedHashMap<String, View> = LinkedHashMap()
     private var selectedEditText: EditText? = null
 
-    fun build(kittyObjects: List<KittyObject?>) {
-        for (formObject in kittyObjects) if (formObject is KittyElements) {
+    fun build(formObjects: List<FormObject?>) {
+        for (formObject in formObjects) if (formObject is FormElements) {
             val tag = formObject.attributes.tag
             formMap[tag] = formObject
             addToLinearLayout(buildElement(formObject), formObject.attributes.params)
-        } else if (formObject is KittyButton) {
+        } else if (formObject is FormButton) {
             addToLinearLayout(buildButton(formObject), formObject.params)
         }
     }
 
-    private fun buildElement(kittyElements: KittyElements): View? {
-        return when (kittyElements.attributes.type) {
-            KittyElements.Type.TEXT -> {
+    private fun buildElement(formElements: FormElements): View? {
+        return when (formElements.attributes.type) {
+            FormElements.Type.TEXT -> {
 
                 val InputTextView = LayoutInflater.from(context).inflate(R.layout.input, null)
 
@@ -58,22 +52,22 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 val InputTextSubHeadingHolder =
                     InputTextView.findViewById<LinearLayout>(R.id.subHeadingHolder)
 
-                kittyElements.attributes.subHeading?.let {
+                formElements.attributes.subHeading?.let {
                     InputTextSpacer.visibility = View.VISIBLE
                     InputTextSubHeadingHolder.visibility = View.VISIBLE
-                    InputTextSubHeading.text = kittyElements.attributes.subHeading
+                    InputTextSubHeading.text = formElements.attributes.subHeading
                 } ?: run {
                     InputTextSpacer.visibility = View.GONE
                     InputTextSubHeadingHolder.visibility = View.GONE
                 }
-                kittyElements.attributes.heading?.let {
+                formElements.attributes.heading?.let {
                     InputTextHeading.visibility = View.VISIBLE
-                    InputTextHeading.text = kittyElements.attributes.heading
+                    InputTextHeading.text = formElements.attributes.heading
                 } ?: run {
                     InputTextHeading.visibility = View.GONE
                 }
 
-                kittyElements.attributes.valueListener?.let { it ->
+                formElements.attributes.valueListener?.let { it ->
                     InputTextEditText.doAfterTextChanged { it1 ->
                         if (!it1.isNullOrEmpty()) {
                             it.value = it1.toString()
@@ -81,9 +75,9 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                     }
                 }
 
-                if (kittyElements.attributes.isRefreshBtn) {
+                if (formElements.attributes.isRefreshBtn) {
                     RightRefreshBtn.visibility = View.VISIBLE
-                    kittyElements.attributes.drawable?.let {
+                    formElements.attributes.drawable?.let {
                         RightRefreshBtn.setBackgroundResource(it)
                     }
                 } else {
@@ -91,25 +85,25 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 }
 
                 RightRefreshBtn.setOnClickListener {
-                    kittyElements.attributes.refreshListener?.let {
+                    formElements.attributes.refreshListener?.let {
                         it.value = "${Date().time}"
                     }
                 }
 
-                InputTextLayoutHolder.hint = kittyElements.attributes.hint
+                InputTextLayoutHolder.hint = formElements.attributes.hint
 
-                InputTextEditText.isEnabled = kittyElements.attributes.isEnabled
-                InputTextEditText.setText(kittyElements.attributes.value)
+                InputTextEditText.isEnabled = formElements.attributes.isEnabled
+                InputTextEditText.setText(formElements.attributes.value)
                 InputTextEditText.inputType = InputType.TYPE_CLASS_TEXT
 
 
 
-                viewMap[kittyElements.attributes.tag] = InputTextEditText
+                viewMap[formElements.attributes.tag] = InputTextEditText
                 addViewToView(InputTextLayout, InputTextView)
                 InputTextLayout
             }
 
-            KittyElements.Type.SELECT -> {
+            FormElements.Type.SELECT -> {
                 val DropDownView = LayoutInflater.from(context).inflate(R.layout.input, null)
 
                 val DropDownLayout = TextInputLayout(context, null, R.id.input_et_layout)
@@ -129,8 +123,8 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 val DropDownSubHeadingHolder =
                     DropDownView.findViewById<LinearLayout>(R.id.subHeadingHolder)
 
-                DropDownLayoutHolder.hint = kittyElements.attributes.hint
-                DropDownEditText.isEnabled = kittyElements.attributes.isEnabled
+                DropDownLayoutHolder.hint = formElements.attributes.hint
+                DropDownEditText.isEnabled = formElements.attributes.isEnabled
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
                     DropDownEditText.showSoftInputOnFocus = false
@@ -140,7 +134,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
 
                 DropDownEditText.inputType = InputType.TYPE_CLASS_TEXT
                 DropDownEditText.setText(
-                    kittyElements.attributes.selectedOptions.toString().replace("[", "")
+                    formElements.attributes.selectedOptions.toString().replace("[", "")
                         .replace("]", "")
                 )
                 DropDownEditText.setOnClickListener {
@@ -149,38 +143,38 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                         context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputManager.hideSoftInputFromWindow(DropDownEditText.windowToken, 0)
 
-                    selectDialog(DropDownEditText, kittyElements)
+                    selectDialog(DropDownEditText, formElements)
                 }
 
                 DropDownEditText.doAfterTextChanged {
                     if (!it.isNullOrEmpty()) {
-                        kittyElements.attributes.valueListener!!.value = it.toString()
+                        formElements.attributes.valueListener!!.value = it.toString()
                     }
                 }
 
-                kittyElements.attributes.subHeading?.let {
+                formElements.attributes.subHeading?.let {
                     DropDownSpacer.visibility = View.VISIBLE
                     DropDownSubHeadingHolder.visibility = View.VISIBLE
-                    DropDownSubHeading.text = kittyElements.attributes.subHeading
+                    DropDownSubHeading.text = formElements.attributes.subHeading
                 } ?: run {
                     DropDownSpacer.visibility = View.GONE
                     DropDownSubHeadingHolder.visibility = View.GONE
                 }
 
-                kittyElements.attributes.heading?.let {
+                formElements.attributes.heading?.let {
                     DropDownHeading.visibility = View.VISIBLE
-                    DropDownHeading.text = kittyElements.attributes.heading
+                    DropDownHeading.text = formElements.attributes.heading
                 } ?: run {
                     DropDownHeading.visibility = View.GONE
                 }
 
-                viewMap[kittyElements.attributes.tag] = DropDownEditText
+                viewMap[formElements.attributes.tag] = DropDownEditText
                 addViewToView(DropDownLayout, DropDownView)
                 DropDownLayout
             }
 
 
-            KittyElements.Type.MULTISELECT -> {
+            FormElements.Type.MULTISELECT -> {
                 val DropDownView = LayoutInflater.from(context).inflate(R.layout.input, null)
 
                 val DropDownLayout = TextInputLayout(context, null, R.id.input_et_layout)
@@ -200,8 +194,8 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 val DropDownSubHeadingHolder =
                     DropDownView.findViewById<LinearLayout>(R.id.subHeadingHolder)
 
-                DropDownLayoutHolder.hint = kittyElements.attributes.hint
-                DropDownEditText.isEnabled = kittyElements.attributes.isEnabled
+                DropDownLayoutHolder.hint = formElements.attributes.hint
+                DropDownEditText.isEnabled = formElements.attributes.isEnabled
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
                     DropDownEditText.showSoftInputOnFocus = false
@@ -213,10 +207,10 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
 
 
 
-                kittyElements.attributes.selectedOptions?.let {
+                formElements.attributes.selectedOptions?.let {
                     if (it.isNotEmpty() && it[0].length > 1) {
                         DropDownEditText.setText(
-                            kittyElements.attributes.selectedOptions.toString().replace("[", "")
+                            formElements.attributes.selectedOptions.toString().replace("[", "")
                                 .replace("]", "")
                         )
                     } else {
@@ -230,38 +224,38 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                         context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputManager.hideSoftInputFromWindow(DropDownEditText.windowToken, 0)
 
-                    multiSelectDialog(DropDownEditText, kittyElements)
+                    multiSelectDialog(DropDownEditText, formElements)
                 }
 
                 DropDownEditText.doAfterTextChanged {
                     if (!it.isNullOrEmpty()) {
-                        kittyElements.attributes.valueListener!!.value = it.toString()
+                        formElements.attributes.valueListener!!.value = it.toString()
                     }
                 }
 
-                kittyElements.attributes.subHeading?.let {
+                formElements.attributes.subHeading?.let {
                     DropDownSpacer.visibility = View.VISIBLE
                     DropDownSubHeadingHolder.visibility = View.VISIBLE
-                    DropDownSubHeading.text = kittyElements.attributes.subHeading
+                    DropDownSubHeading.text = formElements.attributes.subHeading
                 } ?: run {
                     DropDownSpacer.visibility = View.GONE
                     DropDownSubHeadingHolder.visibility = View.GONE
                 }
 
-                kittyElements.attributes.heading?.let {
+                formElements.attributes.heading?.let {
                     DropDownHeading.visibility = View.VISIBLE
-                    DropDownHeading.text = kittyElements.attributes.heading
+                    DropDownHeading.text = formElements.attributes.heading
                 } ?: run {
                     DropDownHeading.visibility = View.GONE
                 }
 
-                viewMap[kittyElements.attributes.tag] = DropDownEditText
+                viewMap[formElements.attributes.tag] = DropDownEditText
                 addViewToView(DropDownLayout, DropDownView)
                 DropDownLayout
             }
 
 
-            KittyElements.Type.SLIDER -> {
+            FormElements.Type.SLIDER -> {
                 val SliderView = LayoutInflater.from(context).inflate(R.layout.slider, null)
                 val Slider: Slider = SliderView.findViewById(R.id.Slider)
                 val SliderLayout = TextInputLayout(context, null, R.id.Slider_Layout)
@@ -271,26 +265,26 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 val SliderSpacer = SliderView.findViewById<View>(R.id.Slider_Spacer)
                 val SliderSubHeadingHolder =
                     SliderView.findViewById<LinearLayout>(R.id.Slider_SubHeading_Holder)
-                if (kittyElements.attributes.subHeading!!.isNotEmpty()) {
+                if (formElements.attributes.subHeading!!.isNotEmpty()) {
                     SliderSpacer.visibility = View.VISIBLE
                     SliderSubHeadingHolder.visibility = View.VISIBLE
-                    SliderSubHeading.text = kittyElements.attributes.subHeading
+                    SliderSubHeading.text = formElements.attributes.subHeading
                 } else {
                     SliderSpacer.visibility = View.GONE
                     SliderSubHeadingHolder.visibility = View.GONE
                 }
-                if (kittyElements.attributes.heading!!.isNotEmpty()) {
+                if (formElements.attributes.heading!!.isNotEmpty()) {
                     SliderHeading.visibility = View.VISIBLE
-                    SliderHeading.text = kittyElements.attributes.heading
+                    SliderHeading.text = formElements.attributes.heading
                 } else {
                     SliderHeading.visibility = View.GONE
                 }
                 addViewToView(SliderLayout, SliderView)
-                viewMap[kittyElements.attributes.tag] = Slider
+                viewMap[formElements.attributes.tag] = Slider
                 SliderLayout
             }
 
-            KittyElements.Type.RATING -> {
+            FormElements.Type.RATING -> {
                 val RatingView = LayoutInflater.from(context).inflate(R.layout.rating, null)
                 val Rating = RatingView.findViewById<RatingBar>(R.id.Rating)
                 val RatingLayout = TextInputLayout(context, null, R.id.RatingLayout)
@@ -301,21 +295,21 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 val RatingSubHeadingHolder =
                     RatingView.findViewById<LinearLayout>(R.id.Rating_SubHeading_Holder)
 
-                kittyElements.attributes.subHeading?.let {
+                formElements.attributes.subHeading?.let {
                     RatingSpacer.visibility = View.VISIBLE
                     RatingSubHeadingHolder.visibility = View.VISIBLE
-                    RatingSubHeading.text = kittyElements.attributes.subHeading
+                    RatingSubHeading.text = formElements.attributes.subHeading
                 } ?: run {
                     RatingSpacer.visibility = View.GONE
                     RatingSubHeadingHolder.visibility = View.GONE
                 }
-                kittyElements.attributes.heading?.let {
+                formElements.attributes.heading?.let {
                     RatingHeading.visibility = View.VISIBLE
-                    RatingHeading.text = kittyElements.attributes.heading
+                    RatingHeading.text = formElements.attributes.heading
                 } ?: run {
                     RatingHeading.visibility = View.GONE
                 }
-                viewMap[kittyElements.attributes.tag] = Rating
+                viewMap[formElements.attributes.tag] = Rating
                 addViewToView(RatingLayout, RatingView)
                 RatingLayout
             }
@@ -323,7 +317,7 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         }
     }
 
-    private fun buildButton(formButton: KittyButton): View {
+    private fun buildButton(formButton: FormButton): View {
         val button = Button(context)
 
         button.text = formButton.title
@@ -358,20 +352,20 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
         parent.addView(child)
     }
 
-    private fun selectDialog(selectedEditText: EditText, selectedKittyElements: KittyElements) {
+    private fun selectDialog(selectedEditText: EditText, selectedFormElements: FormElements) {
         var selectedElements: ArrayList<String> = ArrayList(listOf(""))
-        selectedKittyElements.attributes.selectedOptions?.let {
+        selectedFormElements.attributes.selectedOptions?.let {
             selectedElements = ArrayList(it)
         }
 
         this.selectedEditText = selectedEditText
         val builder = AlertDialog.Builder(context)
 
-        builder.setTitle(selectedKittyElements.attributes.hint)
+        builder.setTitle(selectedFormElements.attributes.hint)
 
         builder.setSingleChoiceItems(
-            selectedKittyElements.attributes.options!!.toTypedArray<CharSequence>(),
-            selectedKittyElements.checkedValue,
+            selectedFormElements.attributes.options!!.toTypedArray<CharSequence>(),
+            selectedFormElements.checkedValue,
             null
         )
 
@@ -379,10 +373,10 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
             dialogInterface.dismiss()
             val selectedPosition = (dialogInterface as AlertDialog).listView.checkedItemPosition
             selectedElements.clear() //We only want one input
-            selectedElements.add(selectedKittyElements.attributes.options!![selectedPosition])
-            selectedKittyElements.attributes.selectedOptions = selectedElements
+            selectedElements.add(selectedFormElements.attributes.options!![selectedPosition])
+            selectedFormElements.attributes.selectedOptions = selectedElements
             selectedEditText.setText(
-                selectedKittyElements.attributes.selectedOptions.toString().replace("[", "")
+                selectedFormElements.attributes.selectedOptions.toString().replace("[", "")
                     .replace("]", "")
             )
         }
@@ -392,24 +386,24 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
 
     private fun multiSelectDialog(
         selectedEditText: EditText,
-        selectedKittyElements: KittyElements
+        selectedFormElements: FormElements
     ) {
 
         var selectedElements: ArrayList<String> = ArrayList(listOf(""))
 
-        selectedKittyElements.attributes.selectedOptions?.let {
+        selectedFormElements.attributes.selectedOptions?.let {
             selectedElements = ArrayList(it)
         }
 
         this.selectedEditText = selectedEditText
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(selectedKittyElements.attributes.hint)
+        builder.setTitle(selectedFormElements.attributes.hint)
 
-        val options = selectedKittyElements.attributes.options!!.toTypedArray()
+        val options = selectedFormElements.attributes.options!!.toTypedArray()
 
-        val arrayChecked = selectedKittyElements.attributes.selectedOptions?.let {
+        val arrayChecked = selectedFormElements.attributes.selectedOptions?.let {
             getSelected(
-                selectedKittyElements.attributes.options!!,
+                selectedFormElements.attributes.options!!,
                 it
             )
         }
@@ -429,18 +423,18 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 Log.e("adad", "$i     $it")
 
                 if (it) {
-                    selectedElements.add(selectedKittyElements.attributes.options!![i])
+                    selectedElements.add(selectedFormElements.attributes.options!![i])
                 }
             }
 
-            selectedKittyElements.attributes.selectedOptions = selectedElements.toList()
+            selectedFormElements.attributes.selectedOptions = selectedElements.toList()
 
-            Log.e("akdjah", selectedKittyElements.attributes.selectedOptions.toString())
+            Log.e("akdjah", selectedFormElements.attributes.selectedOptions.toString())
 
             selectedEditText.setText(
 
 
-                selectedKittyElements.attributes.selectedOptions.toString().replace("[", "")
+                selectedFormElements.attributes.selectedOptions.toString().replace("[", "")
                     .replace("]", "")
             )
         }
@@ -463,19 +457,19 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
             val view = viewMap[element.attributes.tag]
             if (element.attributes.tag == Tag) {
                 when (element.attributes.type) {
-                    KittyElements.Type.SLIDER -> {
+                    FormElements.Type.SLIDER -> {
                         val sl = view as Slider?
                         myvalue = sl!!.value.toString()
                     }
-                    KittyElements.Type.TEXT -> {
+                    FormElements.Type.TEXT -> {
                         val sl = view as EditText?
                         myvalue = sl!!.text.toString()
                     }
-                    KittyElements.Type.SELECT -> {
+                    FormElements.Type.SELECT -> {
                         val sl = view as EditText?
                         myvalue = sl!!.text.toString()
                     }
-                    KittyElements.Type.RATING -> {
+                    FormElements.Type.RATING -> {
                         val sl = view as RatingBar?
                         myvalue = sl!!.rating.toString()
                     }
@@ -492,29 +486,29 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
 
 }
 
-open class KittyObject
-class KittyButton : KittyObject() {
+open class FormObject
+class FormButton : FormObject() {
     var title: String? = null
     var backgroundColor: Int? = null
     var textColor: Int? = null
     var runnable: Runnable? = null
     var params: LinearLayout.LayoutParams? = null
-    fun setTitle(title: String?): KittyButton {
+    fun setTitle(title: String?): FormButton {
         this.title = title
         return this
     }
 
-    fun setBackgroundColor(backgroundColor: Int?): KittyButton {
+    fun setBackgroundColor(backgroundColor: Int?): FormButton {
         this.backgroundColor = backgroundColor
         return this
     }
 
-    fun setTextColor(textColor: Int?): KittyButton {
+    fun setTextColor(textColor: Int?): FormButton {
         this.textColor = textColor
         return this
     }
 
-    fun setRunnable(runnable: Runnable?): KittyButton {
+    fun setRunnable(runnable: Runnable?): FormButton {
         this.runnable = runnable
         return this
     }
