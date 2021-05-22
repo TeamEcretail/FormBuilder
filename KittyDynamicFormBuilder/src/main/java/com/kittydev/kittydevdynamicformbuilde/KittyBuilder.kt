@@ -350,8 +350,11 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
     }
 
     private fun selectDialog(selectedEditText: EditText, selectedKittyElements: KittyElements) {
-        val selectedElements: MutableList<String> =
-            ArrayList(selectedKittyElements.attributes.selectedOptions)
+        var selectedElements:ArrayList<String> = ArrayList(listOf(""))
+        selectedKittyElements.attributes.selectedOptions?.let {
+            selectedElements = ArrayList(it)
+        }
+
         this.selectedEditText = selectedEditText
         val builder = AlertDialog.Builder(context)
 

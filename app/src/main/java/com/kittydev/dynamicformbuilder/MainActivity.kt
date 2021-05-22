@@ -18,19 +18,39 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        val list: ArrayList<String> = ArrayList();
         val sas: ArrayList<KittyObject> = ArrayList()
         val mLinearLayout = findViewById<View>(R.id.TableLayout1) as LinearLayout
         val kittyBuilder: KittyBuilder = KittyBuilder(this, mLinearLayout)
 
-        val _etListner = MutableLiveData<String>()
+        //val _etListner = MutableLiveData<String>()
         val _refreshListner = MutableLiveData<String>()
 
         val sample: ArrayList<String> = ArrayList()
         sample.add("meow")
+        list.add("op1");
+        list.add("op2");
+        list.add("op3");
 
+        val _etListner = MutableLiveData<String>()
+        sas.add(
+            KittyElements().setArguments(
+                attributeDM(
+                    tag = "et1",
+                    type = KittyElements.Type.MULTISELECT,
+                    valueListener = _etListner,
+                    hint = "sample multi",
+                    heading = "Multi",
+                    isRefreshBtn = true,
+                    refreshListener = _refreshListner,
+                    options = list
 
-
+                )
+            )
+        )
+        _etListner.observe(this, Observer { it ->
+            Log.e("kittydev", "Fromm Main Act : -->  " + it)
+        })
         sas.add(
             KittyElements().setArguments(
                 attributeDM(
@@ -40,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                     hint = "sample",
                     heading = "Multi",
                     isRefreshBtn = true,
-                    drawable=R.drawable.ic_baseline_refresh_24,
+                    drawable = R.drawable.ic_baseline_refresh_24,
                     refreshListener = _refreshListner
                 )
             )
