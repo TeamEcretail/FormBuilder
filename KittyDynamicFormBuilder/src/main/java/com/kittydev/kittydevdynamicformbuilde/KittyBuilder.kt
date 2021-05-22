@@ -407,12 +407,14 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
 
         val options = selectedKittyElements.attributes.options!!.toTypedArray()
 
-        val arrayChecked = selectedKittyElements.attributes.selectedOptions?.let {
+        var arrayChecked = BooleanArray(1)
+
+        arrayChecked = selectedKittyElements.attributes.selectedOptions?.let {
             getSelected(
                 selectedKittyElements.attributes.options!!,
                 it
             )
-        }
+        }!!
 
         builder.setMultiChoiceItems(
             options,
@@ -431,8 +433,6 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
                 if (it) {
                     selectedElements.add(selectedKittyElements.attributes.options!![i])
                 }
-            } ?: run {
-                Log.e("aljdkhahd", arrayChecked!!.size.toString())
             }
 
             selectedKittyElements.attributes.selectedOptions = selectedElements.toList()
