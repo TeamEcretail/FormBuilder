@@ -418,16 +418,21 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
             options,
             arrayChecked
         ) { dialog, which, isChecked -> arrayChecked?.set(which, isChecked) }
+
+
         builder.setPositiveButton("OK") { dialogInterface, _ ->
             dialogInterface.dismiss()
             selectedElements.clear()
+
             arrayChecked?.forEachIndexed { i, it ->
 
-                Log.e("adad","$i     $it")
+                Log.e("adad", "$i     $it")
 
                 if (it) {
                     selectedElements.add(selectedKittyElements.attributes.options!![i])
                 }
+            } ?: run {
+                Log.e("aljdkhahd", arrayChecked!!.size.toString())
             }
 
             selectedKittyElements.attributes.selectedOptions = selectedElements.toList()
@@ -435,7 +440,6 @@ class KittyBuilder(private var context: Context, private var linearLayout: Linea
             Log.e("akdjah", selectedKittyElements.attributes.selectedOptions.toString())
 
             selectedEditText.setText(
-
 
 
                 selectedKittyElements.attributes.selectedOptions.toString().replace("[", "")
