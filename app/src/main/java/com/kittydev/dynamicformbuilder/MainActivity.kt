@@ -22,8 +22,8 @@ class MainActivity : AppCompatActivity() {
         val sas: ArrayList<FormObject> = ArrayList()
         val mLinearLayout = findViewById<View>(R.id.TableLayout1) as LinearLayout
         val formBuilder: FormBuilder = FormBuilder(this, mLinearLayout)
-
-        //val _etListner = MutableLiveData<String>()
+        val et = MutableLiveData<String>()
+        et.value = "hello"
         val _refreshListner = MutableLiveData<String>()
 
         val sample: ArrayList<String> = ArrayList()
@@ -38,13 +38,32 @@ class MainActivity : AppCompatActivity() {
                 attributeDM(
                     tag = "et1",
                     type = FormElements.Type.MULTISELECT,
-                    valueListener = _etListner,
                     hint = "sample multi",
-                    heading = "Multi",
+                    heading = "Multi Spinner sample",
                     isRefreshBtn = true,
                     refreshListener = _refreshListner,
                     options = list
 
+                )
+            )
+        )
+        sas.add(
+            FormElements().setArguments(
+                attributeDM(
+                    tag = "et1",
+                    type = FormElements.Type.TWO_INPUT,
+                    heading = "2 input sample",
+                    options = list
+
+                )
+            )
+        )
+        sas.add(
+            FormElements().setArguments(
+                attributeDM(
+                    tag = "et1",
+                    type = FormElements.Type.THREE_INPUT,
+                    heading = "3 input sample",
                 )
             )
         )
@@ -58,37 +77,23 @@ class MainActivity : AppCompatActivity() {
                     type = FormElements.Type.TEXT,
                     valueListener = _etListner,
                     hint = "sample",
-                    heading = "Multi",
                     isRefreshBtn = true,
                     drawable = R.drawable.ic_baseline_refresh_24,
-                    refreshListener = _refreshListner
+                    refreshListener = _refreshListner,
+                    value = et,
+                    heading = "Refresh sample"
                 )
             )
         )
-
-
-        sas.add(
-            FormElements().setArguments(
-                attributeDM(
-                    tag = "et2",
-                    type = FormElements.Type.TEXT,
-                    hint = "sample 2",
-                )
-            )
-        )
-
 
         _refreshListner.observe(this, Observer { it ->
             Log.e("kittydev", "Refreshed")
+            et.value = "bye"
         })
-
-
-
 
         _etListner.observe(this, Observer { it ->
             Log.e("kittydev", "Fromm Main Act : -->  " + it)
         })
-
 
         sas.add(
             FormButton().setTitle("submit").setBackgroundColor(Color.parseColor("#1a237e"))
@@ -98,6 +103,5 @@ class MainActivity : AppCompatActivity() {
 
         val formObjects: List<FormObject> = sas
         formBuilder.build(formObjects)
-
     }
 }

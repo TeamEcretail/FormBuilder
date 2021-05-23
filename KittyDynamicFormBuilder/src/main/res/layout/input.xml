@@ -10,6 +10,7 @@
         android:id="@+id/input_et_Heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#000000"
         android:textStyle="bold"
         android:visibility="gone" />
 
@@ -28,7 +29,8 @@
         <TextView
             android:id="@+id/input_et_SubHeading"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="#000000" />
 
     </LinearLayout>
 

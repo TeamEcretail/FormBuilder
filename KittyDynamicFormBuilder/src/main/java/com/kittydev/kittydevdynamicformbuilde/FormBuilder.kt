@@ -16,7 +16,11 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.util.*
 
-class FormBuilder(private var context: Context, private var linearLayout: LinearLayout) {
+
+class FormBuilder(
+    private var context: Context,
+    private var linearLayout: LinearLayout,
+) {
     private var formMap: LinkedHashMap<String, FormElements> = LinkedHashMap()
     private var viewMap: LinkedHashMap<String, View> = LinkedHashMap()
     private var selectedEditText: EditText? = null
@@ -34,9 +38,7 @@ class FormBuilder(private var context: Context, private var linearLayout: Linear
     private fun buildElement(formElements: FormElements): View? {
         return when (formElements.attributes.type) {
             FormElements.Type.TEXT -> {
-
                 val InputTextView = LayoutInflater.from(context).inflate(R.layout.input, null)
-
                 val InputTextLayout = TextInputLayout(context, null, R.id.input_et_layout)
                 val InputTextLayoutHolder: TextInputLayout =
                     InputTextView.findViewById(R.id.input_et_layout)
@@ -44,14 +46,10 @@ class FormBuilder(private var context: Context, private var linearLayout: Linear
                 val InputTextHeading = InputTextView.findViewById<TextView>(R.id.input_et_Heading)
                 val InputTextSubHeading =
                     InputTextView.findViewById<TextView>(R.id.input_et_SubHeading)
-
                 val InputTextSpacer = InputTextView.findViewById<View>(R.id.input_et_spacer)
-
                 val RightRefreshBtn = InputTextView.findViewById<View>(R.id.image)
-
                 val InputTextSubHeadingHolder =
                     InputTextView.findViewById<LinearLayout>(R.id.subHeadingHolder)
-
                 formElements.attributes.subHeading?.let {
                     InputTextSpacer.visibility = View.VISIBLE
                     InputTextSubHeadingHolder.visibility = View.VISIBLE
@@ -91,38 +89,30 @@ class FormBuilder(private var context: Context, private var linearLayout: Linear
                 }
 
                 InputTextLayoutHolder.hint = formElements.attributes.hint
-
                 InputTextEditText.isEnabled = formElements.attributes.isEnabled
-                InputTextEditText.setText(formElements.attributes.value)
+                formElements.attributes.value?.observeForever {
+                    InputTextEditText.setText(it)
+                }
+
                 InputTextEditText.inputType = InputType.TYPE_CLASS_TEXT
-
-
-
                 viewMap[formElements.attributes.tag] = InputTextEditText
                 addViewToView(InputTextLayout, InputTextView)
                 InputTextLayout
+
             }
 
             FormElements.Type.SELECT -> {
                 val DropDownView = LayoutInflater.from(context).inflate(R.layout.input, null)
-
                 val DropDownLayout = TextInputLayout(context, null, R.id.input_et_layout)
-
                 val DropDownLayoutHolder: TextInputLayout =
                     DropDownView.findViewById(R.id.input_et_layout)
-
                 val DropDownEditText: TextInputEditText = DropDownView.findViewById(R.id.input_et)
-
                 val DropDownHeading = DropDownView.findViewById<TextView>(R.id.input_et_Heading)
-
                 val DropDownSubHeading =
                     DropDownView.findViewById<TextView>(R.id.input_et_SubHeading)
-
                 val DropDownSpacer = DropDownView.findViewById<View>(R.id.input_et_spacer)
-
                 val DropDownSubHeadingHolder =
                     DropDownView.findViewById<LinearLayout>(R.id.subHeadingHolder)
-
                 DropDownLayoutHolder.hint = formElements.attributes.hint
                 DropDownEditText.isEnabled = formElements.attributes.isEnabled
 
@@ -138,11 +128,9 @@ class FormBuilder(private var context: Context, private var linearLayout: Linear
                         .replace("]", "")
                 )
                 DropDownEditText.setOnClickListener {
-
                     val inputManager =
                         context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputManager.hideSoftInputFromWindow(DropDownEditText.windowToken, 0)
-
                     selectDialog(DropDownEditText, formElements)
                 }
 
@@ -173,27 +161,122 @@ class FormBuilder(private var context: Context, private var linearLayout: Linear
                 DropDownLayout
             }
 
+            FormElements.Type.TWO_INPUT -> {
+                val InputTextView = LayoutInflater.from(context).inflate(R.layout.two_input, null)
+                val InputTextLayout = TextInputLayout(context, null, R.id.input_et_layout)
+                val InputTextLayoutHolder: TextInputLayout =
+                    InputTextView.findViewById(R.id.input_et_layout)
+                val InputTextEditText: TextInputEditText = InputTextView.findViewById(R.id.input_et)
+                val InputTextHeading = InputTextView.findViewById<TextView>(R.id.input_et_Heading)
+                val InputTextSubHeading =
+                    InputTextView.findViewById<TextView>(R.id.input_et_SubHeading)
+                val InputTextSpacer = InputTextView.findViewById<View>(R.id.input_et_spacer)
+                val RightRefreshBtn = InputTextView.findViewById<View>(R.id.image)
+                val InputTextSubHeadingHolder =
+                    InputTextView.findViewById<LinearLayout>(R.id.subHeadingHolder)
+
+                formElements.attributes.subHeading?.let {
+                    InputTextSpacer.visibility = View.VISIBLE
+                    InputTextSubHeadingHolder.visibility = View.VISIBLE
+                    InputTextSubHeading.text = formElements.attributes.subHeading
+                } ?: run {
+                    InputTextSpacer.visibility = View.GONE
+                    InputTextSubHeadingHolder.visibility = View.GONE
+                }
+                formElements.attributes.heading?.let {
+                    InputTextHeading.visibility = View.VISIBLE
+                    InputTextHeading.text = formElements.attributes.heading
+                } ?: run {
+                    InputTextHeading.visibility = View.GONE
+                }
+                formElements.attributes.valueListener?.let { it ->
+                    InputTextEditText.doAfterTextChanged { it1 ->
+                        if (!it1.isNullOrEmpty()) {
+                            it.value = it1.toString()
+                        }
+                    }
+                }
+                if (formElements.attributes.isRefreshBtn) {
+                    RightRefreshBtn.visibility = View.VISIBLE
+                    formElements.attributes.drawable?.let {
+                        RightRefreshBtn.setBackgroundResource(it)
+                    }
+                } else {
+                    RightRefreshBtn.visibility = View.GONE
+                }
+                RightRefreshBtn.setOnClickListener {
+                    formElements.attributes.refreshListener?.let {
+                        it.value = "${Date().time}"
+                    }
+                }
+                InputTextLayoutHolder.hint = formElements.attributes.hint
+                InputTextEditText.isEnabled = formElements.attributes.isEnabled
+                formElements.attributes.value?.observeForever {
+                    InputTextEditText.setText(it)
+                }
+                InputTextEditText.inputType = InputType.TYPE_CLASS_TEXT
+                viewMap[formElements.attributes.tag] = InputTextEditText
+                addViewToView(InputTextLayout, InputTextView)
+                InputTextLayout
+            }
+
+            FormElements.Type.THREE_INPUT -> {
+                val InputTextView = LayoutInflater.from(context).inflate(R.layout.three_input, null)
+                val InputTextLayout = TextInputLayout(context, null, R.id.input_et_layout)
+                val InputTextLayoutHolder: TextInputLayout =
+                    InputTextView.findViewById(R.id.input_et_layout)
+                val InputTextEditText: TextInputEditText = InputTextView.findViewById(R.id.input_et)
+                val InputTextHeading = InputTextView.findViewById<TextView>(R.id.input_et_Heading)
+                val InputTextSubHeading =
+                    InputTextView.findViewById<TextView>(R.id.input_et_SubHeading)
+                val InputTextSpacer = InputTextView.findViewById<View>(R.id.input_et_spacer)
+                val InputTextSubHeadingHolder =
+                    InputTextView.findViewById<LinearLayout>(R.id.subHeadingHolder)
+
+                formElements.attributes.subHeading?.let {
+                    InputTextSpacer.visibility = View.VISIBLE
+                    InputTextSubHeadingHolder.visibility = View.VISIBLE
+                    InputTextSubHeading.text = formElements.attributes.subHeading
+                } ?: run {
+                    InputTextSpacer.visibility = View.GONE
+                    InputTextSubHeadingHolder.visibility = View.GONE
+                }
+                formElements.attributes.heading?.let {
+                    InputTextHeading.visibility = View.VISIBLE
+                    InputTextHeading.text = formElements.attributes.heading
+                } ?: run {
+                    InputTextHeading.visibility = View.GONE
+                }
+                formElements.attributes.valueListener?.let { it ->
+                    InputTextEditText.doAfterTextChanged { it1 ->
+                        if (!it1.isNullOrEmpty()) {
+                            it.value = it1.toString()
+                        }
+                    }
+                }
+                InputTextLayoutHolder.hint = formElements.attributes.hint
+                InputTextEditText.isEnabled = formElements.attributes.isEnabled
+                formElements.attributes.value?.observeForever {
+                    InputTextEditText.setText(it)
+                }
+                InputTextEditText.inputType = InputType.TYPE_CLASS_TEXT
+                viewMap[formElements.attributes.tag] = InputTextEditText
+                addViewToView(InputTextLayout, InputTextView)
+                InputTextLayout
+            }
 
             FormElements.Type.MULTISELECT -> {
                 val DropDownView = LayoutInflater.from(context).inflate(R.layout.input, null)
-
                 val DropDownLayout = TextInputLayout(context, null, R.id.input_et_layout)
-
                 val DropDownLayoutHolder: TextInputLayout =
                     DropDownView.findViewById(R.id.input_et_layout)
-
                 val DropDownEditText: TextInputEditText = DropDownView.findViewById(R.id.input_et)
-
                 val DropDownHeading = DropDownView.findViewById<TextView>(R.id.input_et_Heading)
-
                 val DropDownSubHeading =
                     DropDownView.findViewById<TextView>(R.id.input_et_SubHeading)
-
                 val DropDownSpacer = DropDownView.findViewById<View>(R.id.input_et_spacer)
-
                 val DropDownSubHeadingHolder =
                     DropDownView.findViewById<LinearLayout>(R.id.subHeadingHolder)
-
                 DropDownLayoutHolder.hint = formElements.attributes.hint
                 DropDownEditText.isEnabled = formElements.attributes.isEnabled
 
@@ -204,8 +287,6 @@ class FormBuilder(private var context: Context, private var linearLayout: Linear
                 }
 
                 DropDownEditText.inputType = InputType.TYPE_CLASS_TEXT
-
-
 
                 formElements.attributes.selectedOptions?.let {
                     if (it.isNotEmpty() && it[0].length > 1) {
@@ -254,14 +335,12 @@ class FormBuilder(private var context: Context, private var linearLayout: Linear
                 DropDownLayout
             }
 
-
             FormElements.Type.SLIDER -> {
                 val SliderView = LayoutInflater.from(context).inflate(R.layout.slider, null)
                 val Slider: Slider = SliderView.findViewById(R.id.Slider)
                 val SliderLayout = TextInputLayout(context, null, R.id.Slider_Layout)
                 val SliderHeading = SliderView.findViewById<TextView>(R.id.Slide_Heading)
-                val SliderSubHeading =
-                    SliderView.findViewById<TextView>(R.id.Slider_SubHeading)
+                val SliderSubHeading = SliderView.findViewById<TextView>(R.id.Slider_SubHeading)
                 val SliderSpacer = SliderView.findViewById<View>(R.id.Slider_Spacer)
                 val SliderSubHeadingHolder =
                     SliderView.findViewById<LinearLayout>(R.id.Slider_SubHeading_Holder)
@@ -288,8 +367,7 @@ class FormBuilder(private var context: Context, private var linearLayout: Linear
                 val RatingView = LayoutInflater.from(context).inflate(R.layout.rating, null)
                 val Rating = RatingView.findViewById<RatingBar>(R.id.Rating)
                 val RatingLayout = TextInputLayout(context, null, R.id.RatingLayout)
-                val RatingSubHeading =
-                    RatingView.findViewById<TextView>(R.id.Rating_SubHeading)
+                val RatingSubHeading = RatingView.findViewById<TextView>(R.id.Rating_SubHeading)
                 val RatingHeading = RatingView.findViewById<TextView>(R.id.Rating_Heading)
                 val RatingSpacer = RatingView.findViewById<View>(R.id.Rating_Spacer)
                 val RatingSubHeadingHolder =
@@ -483,6 +561,7 @@ class FormBuilder(private var context: Context, private var linearLayout: Linear
     fun reset() {
         linearLayout.removeAllViews()
     }
+
 
 }
 
