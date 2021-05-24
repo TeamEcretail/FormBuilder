@@ -163,59 +163,100 @@ class FormBuilder(
 
             FormElements.Type.TWO_INPUT -> {
                 val InputTextView = LayoutInflater.from(context).inflate(R.layout.two_input, null)
-                val InputTextLayout = TextInputLayout(context, null, R.id.input_et_layout)
+                val InputTextLayout = TextInputLayout(context, null, R.id.input_et_layout1)
+                val InputTextLayout2 = TextInputLayout(context, null, R.id.input_et_layout2)
                 val InputTextLayoutHolder: TextInputLayout =
                     InputTextView.findViewById(R.id.input_et_layout)
-                val InputTextEditText: TextInputEditText = InputTextView.findViewById(R.id.input_et)
+                val InputTextLayoutHolder2: TextInputLayout =
+                    InputTextView.findViewById(R.id.input_et_layout2)
+                val InputTextEditText1: TextInputEditText = InputTextView.findViewById(R.id.input_et1)
+                val InputTextEditText2: TextInputEditText = InputTextView.findViewById(R.id.input_et2)
                 val InputTextHeading = InputTextView.findViewById<TextView>(R.id.input_et_Heading)
                 val InputTextSubHeading =
                     InputTextView.findViewById<TextView>(R.id.input_et_SubHeading)
                 val InputTextSpacer = InputTextView.findViewById<View>(R.id.input_et_spacer)
-                val RightRefreshBtn = InputTextView.findViewById<View>(R.id.image)
+                val RightRefreshBtn1 = InputTextView.findViewById<View>(R.id.image1)
+                val RightRefreshBtn2 = InputTextView.findViewById<View>(R.id.image2)
                 val InputTextSubHeadingHolder =
                     InputTextView.findViewById<LinearLayout>(R.id.subHeadingHolder)
 
-                formElements.attributes.subHeading?.let {
+                formElements.attributes_2input.subHeading?.let {
                     InputTextSpacer.visibility = View.VISIBLE
                     InputTextSubHeadingHolder.visibility = View.VISIBLE
-                    InputTextSubHeading.text = formElements.attributes.subHeading
+                    InputTextSubHeading.text = formElements.attributes_2input.subHeading
                 } ?: run {
                     InputTextSpacer.visibility = View.GONE
                     InputTextSubHeadingHolder.visibility = View.GONE
                 }
-                formElements.attributes.heading?.let {
+
+                formElements.attributes_2input.heading?.let {
                     InputTextHeading.visibility = View.VISIBLE
-                    InputTextHeading.text = formElements.attributes.heading
+                    InputTextHeading.text = formElements.attributes_2input.heading
                 } ?: run {
                     InputTextHeading.visibility = View.GONE
                 }
-                formElements.attributes.valueListener?.let { it ->
-                    InputTextEditText.doAfterTextChanged { it1 ->
+
+                formElements.attributes_2input.valueListener1?.let { it ->
+                    InputTextEditText1.doAfterTextChanged { it1 ->
                         if (!it1.isNullOrEmpty()) {
                             it.value = it1.toString()
                         }
                     }
                 }
-                if (formElements.attributes.isRefreshBtn) {
-                    RightRefreshBtn.visibility = View.VISIBLE
-                    formElements.attributes.drawable?.let {
-                        RightRefreshBtn.setBackgroundResource(it)
+
+                formElements.attributes_2input.valueListener2?.let { it ->
+                    InputTextEditText2.doAfterTextChanged { it1 ->
+                        if (!it1.isNullOrEmpty()) {
+                            it.value = it1.toString()
+                        }
+                    }
+                }
+
+                if (formElements.attributes_2input.isRefreshBtn1) {
+                    RightRefreshBtn1.visibility = View.VISIBLE
+                    formElements.attributes_2input.drawable1?.let {
+                        RightRefreshBtn1.setBackgroundResource(it)
                     }
                 } else {
-                    RightRefreshBtn.visibility = View.GONE
+                    RightRefreshBtn1.visibility = View.GONE
                 }
-                RightRefreshBtn.setOnClickListener {
-                    formElements.attributes.refreshListener?.let {
+                RightRefreshBtn1.setOnClickListener {
+                    formElements.attributes_2input.refreshListener1?.let {
                         it.value = "${Date().time}"
                     }
                 }
-                InputTextLayoutHolder.hint = formElements.attributes.hint
-                InputTextEditText.isEnabled = formElements.attributes.isEnabled
-                formElements.attributes.value?.observeForever {
-                    InputTextEditText.setText(it)
+
+                if (formElements.attributes_2input.isRefreshBtn2) {
+                    RightRefreshBtn2.visibility = View.VISIBLE
+                    formElements.attributes_2input.drawable2?.let {
+                        RightRefreshBtn2.setBackgroundResource(it)
+                    }
+                } else {
+                    RightRefreshBtn2.visibility = View.GONE
                 }
-                InputTextEditText.inputType = InputType.TYPE_CLASS_TEXT
-                viewMap[formElements.attributes.tag] = InputTextEditText
+                RightRefreshBtn2.setOnClickListener {
+                    formElements.attributes_2input.refreshListener2?.let {
+                        it.value = "${Date().time}"
+                    }
+                }
+
+
+                InputTextLayoutHolder.hint = formElements.attributes_2input.hint1
+                InputTextLayoutHolder2.hint = formElements.attributes_2input.hint2
+
+                InputTextEditText1.isEnabled = formElements.attributes_2input.isEnabled1
+                InputTextEditText2.isEnabled = formElements.attributes_2input.isEnabled2
+
+                formElements.attributes_2input.value1?.observeForever {
+                    InputTextEditText1.setText(it)
+                }
+                formElements.attributes_2input.value2?.observeForever {
+                    InputTextEditText2.setText(it)
+                }
+                InputTextEditText1.inputType = InputType.TYPE_CLASS_TEXT
+                InputTextEditText2.inputType = InputType.TYPE_CLASS_TEXT
+                viewMap[formElements.attributes_2input.tag1] = InputTextEditText1
+                viewMap[formElements.attributes_2input.tag2] = InputTextEditText2
                 addViewToView(InputTextLayout, InputTextView)
                 InputTextLayout
             }
