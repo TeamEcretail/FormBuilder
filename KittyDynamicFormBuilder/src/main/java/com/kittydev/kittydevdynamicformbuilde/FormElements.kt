@@ -7,12 +7,13 @@ import com.kittydev.kittydevdynamicformbuilde.Model.attributeDM
  */
 class FormElements : FormObject() {
     lateinit var attributes: attributeDM
-
     var attributes_2: attributeDM? = null
+    var attributes_3: attributeDM? = null
 
-    fun setArguments(a1: attributeDM, a2: attributeDM? = null): FormElements {
+    fun setArguments(a1: attributeDM, a2: attributeDM? = null,a3: attributeDM?=null): FormElements {
         this.attributes = a1
         this.attributes_2 = a2
+        this.attributes_3= a3
         return this
     }
 

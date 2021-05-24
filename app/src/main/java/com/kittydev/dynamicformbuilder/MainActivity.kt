@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         list.add("op3");
 
         val _etListner = MutableLiveData<String>()
-        sas.add(
+      /*  sas.add(
             FormElements().setArguments(
                 attributeDM(
                     tag = "et1",
@@ -51,22 +51,11 @@ class MainActivity : AppCompatActivity() {
             FormElements().setArguments(
                 attributeDM(
                     tag = "et1",
-                    type = FormElements.Type.TWO_INPUT,
-                    heading = "2 input sample",
-                    options = list
-
-                )
-            )
-        )
-        sas.add(
-            FormElements().setArguments(
-                attributeDM(
-                    tag = "et1",
                     type = FormElements.Type.THREE_INPUT,
                     heading = "3 input sample",
                 )
             )
-        )
+        )*/
         _etListner.observe(this, Observer { it ->
             Log.e("kittydev", "Fromm Main Act : -->  " + it)
         })
@@ -91,21 +80,36 @@ class MainActivity : AppCompatActivity() {
                 attributeDM(
                     tag = "et1",
                     type = FormElements.Type.TWO_INPUT,
-                    valueListener = _etListner,
                     hint = "sample",
-                    value = et,
-                    heading = "Refresh sample"
+                    heading = "2 Input sample"
                 ), attributeDM(
                     tag = "et2",
                     type = FormElements.Type.TWO_INPUT,
-                    valueListener = _etListner,
                     hint = "sample2",
-                    value = et,
-                    heading = "Refresh sample2"
+                    heading = "2 Input sample"
                 )
             )
         )
-
+        sas.add(
+            FormElements().setArguments(
+                attributeDM(
+                    tag = "et1",
+                    type = FormElements.Type.THREE_INPUT,
+                    hint = "sample1",
+                    heading = "3 Input sample"
+                ), attributeDM(
+                    tag = "et2",
+                    type = FormElements.Type.THREE_INPUT,
+                    hint = "sample2",
+                    heading = "3 Input sample"
+                ), attributeDM(
+                    tag = "et2",
+                    type = FormElements.Type.THREE_INPUT,
+                    hint = "sample3",
+                    heading = "3 Input sample"
+                )
+            )
+        )
         _refreshListner.observe(this, Observer { it ->
             Log.e("kittydev", "Refreshed")
             et.value = "bye"

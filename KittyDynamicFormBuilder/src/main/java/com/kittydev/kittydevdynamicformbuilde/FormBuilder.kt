@@ -27,14 +27,23 @@ class FormBuilder(
 
     fun build(formObjects: List<FormObject?>) {
         for (formObject in formObjects) if (formObject is FormElements) {
-            val tag = formObject.attributes.tag
-            formMap[tag] = formObject
-            addToLinearLayout(buildElement(formObject), formObject.attributes.params)
 
-            formObject.attributes_2?.let {
-                formMap[it.tag] = formObject
-                addToLinearLayout(buildElement(formObject), formObject.attributes_2!!.params)
+            if (formObject.attributes_2 != null) {
+                formObject.attributes_2?.let {
+                    formMap[it.tag] = formObject
+                    addToLinearLayout(buildElement(formObject), formObject.attributes_2!!.params)
+                }
+            } else if (formObject.attributes_3 != null) {
+                formObject.attributes_3?.let {
+                    formMap[it.tag] = formObject
+                    addToLinearLayout(buildElement(formObject), formObject.attributes_3!!.params)
+                }
+            } else {
+                val tag = formObject.attributes.tag
+                formMap[tag] = formObject
+                addToLinearLayout(buildElement(formObject), formObject.attributes.params)
             }
+
 
         } else if (formObject is FormButton) {
             addToLinearLayout(buildButton(formObject), formObject.params)
@@ -170,7 +179,6 @@ class FormBuilder(
             FormElements.Type.TWO_INPUT -> {
                 val InputTextView = LayoutInflater.from(context).inflate(R.layout.two_input, null)
                 val InputTextLayout = TextInputLayout(context, null, R.id.input_et_layout1)
-                val InputTextLayout2 = TextInputLayout(context, null, R.id.input_et_layout2)
                 val InputTextLayoutHolder: TextInputLayout =
                     InputTextView.findViewById(R.id.input_et_layout1)
                 val InputTextLayoutHolder2: TextInputLayout =
@@ -281,14 +289,24 @@ class FormBuilder(
 
             FormElements.Type.THREE_INPUT -> {
                 val InputTextView = LayoutInflater.from(context).inflate(R.layout.three_input, null)
-                val InputTextLayout = TextInputLayout(context, null, R.id.input_et_layout)
+                val InputTextLayout = TextInputLayout(context, null, R.id.input_et_layout1)
                 val InputTextLayoutHolder: TextInputLayout =
-                    InputTextView.findViewById(R.id.input_et_layout)
-                val InputTextEditText: TextInputEditText = InputTextView.findViewById(R.id.input_et)
+                    InputTextView.findViewById(R.id.input_et_layout1)
+                val InputTextLayoutHolder2: TextInputLayout =
+                    InputTextView.findViewById(R.id.input_et_layout2)
+                val InputTextLayoutHolder3: TextInputLayout =
+                    InputTextView.findViewById(R.id.input_et_layout3)
+                val InputTextEditText1: TextInputEditText =
+                    InputTextView.findViewById(R.id.input_et1)
+                val InputTextEditText2: TextInputEditText =
+                    InputTextView.findViewById(R.id.input_et2)
+                val InputTextEditText3: TextInputEditText =
+                    InputTextView.findViewById(R.id.input_et3)
                 val InputTextHeading = InputTextView.findViewById<TextView>(R.id.input_et_Heading)
                 val InputTextSubHeading =
                     InputTextView.findViewById<TextView>(R.id.input_et_SubHeading)
                 val InputTextSpacer = InputTextView.findViewById<View>(R.id.input_et_spacer)
+
                 val InputTextSubHeadingHolder =
                     InputTextView.findViewById<LinearLayout>(R.id.subHeadingHolder)
 
@@ -300,98 +318,82 @@ class FormBuilder(
                     InputTextSpacer.visibility = View.GONE
                     InputTextSubHeadingHolder.visibility = View.GONE
                 }
-                formElements.attributes.heading?.let {
-                    InputTextHeading.visibility = View.VISIBLE
-                    InputTextHeading.text = formElements.attributes.heading
-                } ?: run {
-                    InputTextHeading.visibility = View.GONE
+
+                formElements.attributes_2?.let {
+                    it.heading?.let {
+                        InputTextHeading.visibility = View.VISIBLE
+                        InputTextHeading.text = formElements.attributes_2!!.heading
+                    } ?: run {
+                        InputTextHeading.visibility = View.GONE
+                    }
+                }
+                formElements.attributes_3?.let {
+                    it.heading?.let {
+                        InputTextHeading.visibility = View.VISIBLE
+                        InputTextHeading.text = formElements.attributes_3!!.heading
+                    } ?: run {
+                        InputTextHeading.visibility = View.GONE
+                    }
                 }
                 formElements.attributes.valueListener?.let { it ->
-                    InputTextEditText.doAfterTextChanged { it1 ->
+                    InputTextEditText1.doAfterTextChanged { it1 ->
                         if (!it1.isNullOrEmpty()) {
                             it.value = it1.toString()
                         }
                     }
                 }
-                InputTextLayoutHolder.hint = formElements.attributes.hint
-                InputTextEditText.isEnabled = formElements.attributes.isEnabled
-                formElements.attributes.value?.observeForever {
-                    InputTextEditText.setText(it)
+
+                formElements.attributes_2?.let { ita ->
+                    ita.valueListener?.let { it ->
+                        InputTextEditText2.doAfterTextChanged { it1 ->
+                            if (!it1.isNullOrEmpty()) {
+                                it.value = it1.toString()
+                            }
+                        }
+                    }
                 }
-                InputTextEditText.inputType = InputType.TYPE_CLASS_TEXT
-                viewMap[formElements.attributes.tag] = InputTextEditText
+                formElements.attributes_3?.let { ita ->
+                    ita.valueListener?.let { it ->
+                        InputTextEditText3.doAfterTextChanged { it1 ->
+                            if (!it1.isNullOrEmpty()) {
+                                it.value = it1.toString()
+                            }
+                        }
+                    }
+                }
+
+                InputTextLayoutHolder.hint = formElements.attributes.hint
+
+                InputTextEditText1.isEnabled = formElements.attributes.isEnabled
+
+
+                formElements.attributes.value?.observeForever {
+                    InputTextEditText1.setText(it)
+                }
+
+                formElements.attributes_2?.let { ita ->
+                    InputTextLayoutHolder2.hint = ita.hint
+                    InputTextEditText2.isEnabled = ita.isEnabled
+                    ita.value?.observeForever {
+                        InputTextEditText2.setText(it)
+                    }
+                    viewMap[ita.tag] = InputTextEditText2
+                }
+                formElements.attributes_3?.let { ita ->
+                    InputTextLayoutHolder3.hint = ita.hint
+                    InputTextEditText3.isEnabled = ita.isEnabled
+                    ita.value?.observeForever {
+                        InputTextEditText3.setText(it)
+                    }
+                    viewMap[ita.tag] = InputTextEditText2
+                }
+                InputTextEditText1.inputType = InputType.TYPE_CLASS_TEXT
+                InputTextEditText2.inputType = InputType.TYPE_CLASS_TEXT
+                InputTextEditText3.inputType = InputType.TYPE_CLASS_TEXT
+
+                viewMap[formElements.attributes.tag] = InputTextEditText1
                 addViewToView(InputTextLayout, InputTextView)
                 InputTextLayout
-            }
-
-            FormElements.Type.MULTISELECT -> {
-                val DropDownView = LayoutInflater.from(context).inflate(R.layout.input, null)
-                val DropDownLayout = TextInputLayout(context, null, R.id.input_et_layout)
-                val DropDownLayoutHolder: TextInputLayout =
-                    DropDownView.findViewById(R.id.input_et_layout)
-                val DropDownEditText: TextInputEditText = DropDownView.findViewById(R.id.input_et)
-                val DropDownHeading = DropDownView.findViewById<TextView>(R.id.input_et_Heading)
-                val DropDownSubHeading =
-                    DropDownView.findViewById<TextView>(R.id.input_et_SubHeading)
-                val DropDownSpacer = DropDownView.findViewById<View>(R.id.input_et_spacer)
-                val DropDownSubHeadingHolder =
-                    DropDownView.findViewById<LinearLayout>(R.id.subHeadingHolder)
-                DropDownLayoutHolder.hint = formElements.attributes.hint
-                DropDownEditText.isEnabled = formElements.attributes.isEnabled
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
-                    DropDownEditText.showSoftInputOnFocus = false
-                } else { // API 11-20
-                    DropDownEditText.setTextIsSelectable(true)
-                }
-
-                DropDownEditText.inputType = InputType.TYPE_CLASS_TEXT
-
-                formElements.attributes.selectedOptions?.let {
-                    if (it.isNotEmpty() && it[0].length > 1) {
-                        DropDownEditText.setText(
-                            formElements.attributes.selectedOptions.toString().replace("[", "")
-                                .replace("]", "")
-                        )
-                    } else {
-                        DropDownEditText.setText("")
-                    }
-                }
-
-                DropDownEditText.setOnClickListener {
-
-                    val inputManager =
-                        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputManager.hideSoftInputFromWindow(DropDownEditText.windowToken, 0)
-
-                    multiSelectDialog(DropDownEditText, formElements)
-                }
-
-                DropDownEditText.doAfterTextChanged {
-                    if (!it.isNullOrEmpty()) {
-                        formElements.attributes.valueListener!!.value = it.toString()
-                    }
-                }
-
-                formElements.attributes.subHeading?.let {
-                    DropDownSpacer.visibility = View.VISIBLE
-                    DropDownSubHeadingHolder.visibility = View.VISIBLE
-                    DropDownSubHeading.text = formElements.attributes.subHeading
-                } ?: run {
-                    DropDownSpacer.visibility = View.GONE
-                    DropDownSubHeadingHolder.visibility = View.GONE
-                }
-
-                formElements.attributes.heading?.let {
-                    DropDownHeading.visibility = View.VISIBLE
-                    DropDownHeading.text = formElements.attributes.heading
-                } ?: run {
-                    DropDownHeading.visibility = View.GONE
-                }
-
-                viewMap[formElements.attributes.tag] = DropDownEditText
-                addViewToView(DropDownLayout, DropDownView)
-                DropDownLayout
             }
 
             FormElements.Type.SLIDER -> {
