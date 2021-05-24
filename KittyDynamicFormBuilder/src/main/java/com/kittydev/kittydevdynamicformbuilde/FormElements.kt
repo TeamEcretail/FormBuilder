@@ -1,23 +1,21 @@
 package com.kittydev.kittydevdynamicformbuilde
 
 import com.kittydev.kittydevdynamicformbuilde.Model.attributeDM
-import com.kittydev.kittydevdynamicformbuilde.Model.attributeDM2
 
 /**
  * Created by PadmaDev on 07/10/2020
  */
 class FormElements : FormObject() {
     lateinit var attributes: attributeDM
-    lateinit var attributes_2input: attributeDM2
-    fun setArguments(arr: attributeDM): FormElements {
-        this.attributes = arr
+
+    var attributes_2: attributeDM? = null
+
+    fun setArguments(a1: attributeDM, a2: attributeDM? = null): FormElements {
+        this.attributes = a1
+        this.attributes_2 = a2
         return this
     }
 
-    fun set2Arguments(arr: attributeDM2): FormElements {
-        this.attributes_2input = arr
-        return this
-    }
 
     val checkedValue: Int
         get() {

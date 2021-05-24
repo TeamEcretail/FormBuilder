@@ -30,6 +30,12 @@ class FormBuilder(
             val tag = formObject.attributes.tag
             formMap[tag] = formObject
             addToLinearLayout(buildElement(formObject), formObject.attributes.params)
+
+            formObject.attributes_2?.let {
+                formMap[it.tag] = formObject
+                addToLinearLayout(buildElement(formObject), formObject.attributes_2!!.params)
+            }
+
         } else if (formObject is FormButton) {
             addToLinearLayout(buildButton(formObject), formObject.params)
         }
@@ -166,11 +172,13 @@ class FormBuilder(
                 val InputTextLayout = TextInputLayout(context, null, R.id.input_et_layout1)
                 val InputTextLayout2 = TextInputLayout(context, null, R.id.input_et_layout2)
                 val InputTextLayoutHolder: TextInputLayout =
-                    InputTextView.findViewById(R.id.input_et_layout)
+                    InputTextView.findViewById(R.id.input_et_layout1)
                 val InputTextLayoutHolder2: TextInputLayout =
                     InputTextView.findViewById(R.id.input_et_layout2)
-                val InputTextEditText1: TextInputEditText = InputTextView.findViewById(R.id.input_et1)
-                val InputTextEditText2: TextInputEditText = InputTextView.findViewById(R.id.input_et2)
+                val InputTextEditText1: TextInputEditText =
+                    InputTextView.findViewById(R.id.input_et1)
+                val InputTextEditText2: TextInputEditText =
+                    InputTextView.findViewById(R.id.input_et2)
                 val InputTextHeading = InputTextView.findViewById<TextView>(R.id.input_et_Heading)
                 val InputTextSubHeading =
                     InputTextView.findViewById<TextView>(R.id.input_et_SubHeading)
@@ -180,23 +188,25 @@ class FormBuilder(
                 val InputTextSubHeadingHolder =
                     InputTextView.findViewById<LinearLayout>(R.id.subHeadingHolder)
 
-                formElements.attributes_2input.subHeading?.let {
+                formElements.attributes.subHeading?.let {
                     InputTextSpacer.visibility = View.VISIBLE
                     InputTextSubHeadingHolder.visibility = View.VISIBLE
-                    InputTextSubHeading.text = formElements.attributes_2input.subHeading
+                    InputTextSubHeading.text = formElements.attributes.subHeading
                 } ?: run {
                     InputTextSpacer.visibility = View.GONE
                     InputTextSubHeadingHolder.visibility = View.GONE
                 }
 
-                formElements.attributes_2input.heading?.let {
-                    InputTextHeading.visibility = View.VISIBLE
-                    InputTextHeading.text = formElements.attributes_2input.heading
-                } ?: run {
-                    InputTextHeading.visibility = View.GONE
+                formElements.attributes_2?.let {
+                    it.heading?.let {
+                        InputTextHeading.visibility = View.VISIBLE
+                        InputTextHeading.text = formElements.attributes_2!!.heading
+                    } ?: run {
+                        InputTextHeading.visibility = View.GONE
+                    }
                 }
 
-                formElements.attributes_2input.valueListener1?.let { it ->
+                formElements.attributes.valueListener?.let { it ->
                     InputTextEditText1.doAfterTextChanged { it1 ->
                         if (!it1.isNullOrEmpty()) {
                             it.value = it1.toString()
@@ -204,59 +214,67 @@ class FormBuilder(
                     }
                 }
 
-                formElements.attributes_2input.valueListener2?.let { it ->
-                    InputTextEditText2.doAfterTextChanged { it1 ->
-                        if (!it1.isNullOrEmpty()) {
-                            it.value = it1.toString()
+                formElements.attributes_2?.let { ita ->
+                    ita.valueListener?.let { it ->
+                        InputTextEditText2.doAfterTextChanged { it1 ->
+                            if (!it1.isNullOrEmpty()) {
+                                it.value = it1.toString()
+                            }
                         }
                     }
                 }
 
-                if (formElements.attributes_2input.isRefreshBtn1) {
+                if (formElements.attributes.isRefreshBtn) {
                     RightRefreshBtn1.visibility = View.VISIBLE
-                    formElements.attributes_2input.drawable1?.let {
+                    formElements.attributes.drawable?.let {
                         RightRefreshBtn1.setBackgroundResource(it)
                     }
                 } else {
                     RightRefreshBtn1.visibility = View.GONE
                 }
                 RightRefreshBtn1.setOnClickListener {
-                    formElements.attributes_2input.refreshListener1?.let {
+                    formElements.attributes.refreshListener?.let {
                         it.value = "${Date().time}"
                     }
                 }
 
-                if (formElements.attributes_2input.isRefreshBtn2) {
-                    RightRefreshBtn2.visibility = View.VISIBLE
-                    formElements.attributes_2input.drawable2?.let {
-                        RightRefreshBtn2.setBackgroundResource(it)
+                formElements.attributes_2?.let { ita ->
+                    if (ita.isRefreshBtn) {
+                        RightRefreshBtn2.visibility = View.VISIBLE
+                        formElements.attributes_2!!.drawable?.let {
+                            RightRefreshBtn2.setBackgroundResource(it)
+                        }
+                    } else {
+                        RightRefreshBtn2.visibility = View.GONE
                     }
-                } else {
-                    RightRefreshBtn2.visibility = View.GONE
                 }
+
                 RightRefreshBtn2.setOnClickListener {
-                    formElements.attributes_2input.refreshListener2?.let {
+                    formElements.attributes_2!!.refreshListener?.let {
                         it.value = "${Date().time}"
                     }
                 }
 
 
-                InputTextLayoutHolder.hint = formElements.attributes_2input.hint1
-                InputTextLayoutHolder2.hint = formElements.attributes_2input.hint2
+                InputTextLayoutHolder.hint = formElements.attributes.hint
 
-                InputTextEditText1.isEnabled = formElements.attributes_2input.isEnabled1
-                InputTextEditText2.isEnabled = formElements.attributes_2input.isEnabled2
+                InputTextEditText1.isEnabled = formElements.attributes.isEnabled
 
-                formElements.attributes_2input.value1?.observeForever {
+
+                formElements.attributes.value?.observeForever {
                     InputTextEditText1.setText(it)
                 }
-                formElements.attributes_2input.value2?.observeForever {
-                    InputTextEditText2.setText(it)
+                formElements.attributes_2?.let { ita ->
+                    InputTextLayoutHolder2.hint = ita.hint
+                    InputTextEditText2.isEnabled = ita.isEnabled
+                    ita.value?.observeForever {
+                        InputTextEditText2.setText(it)
+                    }
+                    viewMap[ita.tag] = InputTextEditText2
                 }
                 InputTextEditText1.inputType = InputType.TYPE_CLASS_TEXT
                 InputTextEditText2.inputType = InputType.TYPE_CLASS_TEXT
-                viewMap[formElements.attributes_2input.tag1] = InputTextEditText1
-                viewMap[formElements.attributes_2input.tag2] = InputTextEditText2
+                viewMap[formElements.attributes.tag] = InputTextEditText1
                 addViewToView(InputTextLayout, InputTextView)
                 InputTextLayout
             }

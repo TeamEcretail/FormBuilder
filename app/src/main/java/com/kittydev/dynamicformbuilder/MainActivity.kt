@@ -86,6 +86,26 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
+        sas.add(
+            FormElements().setArguments(
+                attributeDM(
+                    tag = "et1",
+                    type = FormElements.Type.TWO_INPUT,
+                    valueListener = _etListner,
+                    hint = "sample",
+                    value = et,
+                    heading = "Refresh sample"
+                ), attributeDM(
+                    tag = "et2",
+                    type = FormElements.Type.TWO_INPUT,
+                    valueListener = _etListner,
+                    hint = "sample2",
+                    value = et,
+                    heading = "Refresh sample2"
+                )
+            )
+        )
+
         _refreshListner.observe(this, Observer { it ->
             Log.e("kittydev", "Refreshed")
             et.value = "bye"
