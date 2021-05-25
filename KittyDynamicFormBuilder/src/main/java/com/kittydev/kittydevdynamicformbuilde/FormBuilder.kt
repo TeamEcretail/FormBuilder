@@ -28,20 +28,24 @@ class FormBuilder(
     fun build(formObjects: List<FormObject?>) {
         for (formObject in formObjects) if (formObject is FormElements) {
 
-            if (formObject.attributes_2 != null) {
-                formObject.attributes_2?.let {
-                    formMap[it.tag] = formObject
-                    addToLinearLayout(buildElement(formObject), formObject.attributes_2!!.params)
+            when {
+                formObject.attributes_2 != null -> {
+                    formObject.attributes_2?.let {
+                        formMap[it.tag] = formObject
+                        addToLinearLayout(buildElement(formObject), formObject.attributes_2!!.params)
+                    }
                 }
-            } else if (formObject.attributes_3 != null) {
-                formObject.attributes_3?.let {
-                    formMap[it.tag] = formObject
-                    addToLinearLayout(buildElement(formObject), formObject.attributes_3!!.params)
+                formObject.attributes_3 != null -> {
+                    formObject.attributes_3?.let {
+                        formMap[it.tag] = formObject
+                        addToLinearLayout(buildElement(formObject), formObject.attributes_3!!.params)
+                    }
                 }
-            } else {
-                val tag = formObject.attributes.tag
-                formMap[tag] = formObject
-                addToLinearLayout(buildElement(formObject), formObject.attributes.params)
+                else -> {
+                    val tag = formObject.attributes.tag
+                    formMap[tag] = formObject
+                    addToLinearLayout(buildElement(formObject), formObject.attributes.params)
+                }
             }
 
 
@@ -478,8 +482,12 @@ class FormBuilder(
             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
         )
         layoutParams.setMargins(8, 8, 8, 8)
-        view!!.layoutParams = params ?: layoutParams
-        linearLayout.addView(view)
+        //view!!.layoutParams = params ?: layoutParams
+        view?.let {
+            it.layoutParams = params ?: layoutParams
+            linearLayout.addView(view)
+        }
+
     }
 
     private fun addViewToView(parent: ViewGroup, child: View) {
