@@ -456,6 +456,78 @@ class FormBuilder(
                 addViewToView(RatingLayout, RatingView)
                 RatingLayout
             }
+
+
+            FormElements.Type.MULTISELECT -> {
+                val DropDownView = LayoutInflater.from(context).inflate(R.layout.input, null)
+                val DropDownLayout = TextInputLayout(context, null, R.id.input_et_layout)
+                val DropDownLayoutHolder: TextInputLayout =
+                    DropDownView.findViewById(R.id.input_et_layout)
+                val DropDownEditText: TextInputEditText = DropDownView.findViewById(R.id.input_et)
+                val DropDownHeading = DropDownView.findViewById<TextView>(R.id.input_et_Heading)
+                val DropDownSubHeading =
+                    DropDownView.findViewById<TextView>(R.id.input_et_SubHeading)
+                val DropDownSpacer = DropDownView.findViewById<View>(R.id.input_et_spacer)
+                val DropDownSubHeadingHolder =
+                    DropDownView.findViewById<LinearLayout>(R.id.subHeadingHolder)
+                DropDownLayoutHolder.hint = formElements.attributes.hint
+                DropDownEditText.isEnabled = formElements.attributes.isEnabled
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // API 21
+                    DropDownEditText.showSoftInputOnFocus = false
+                } else { // API 11-20
+                    DropDownEditText.setTextIsSelectable(true)
+                }
+
+                DropDownEditText.inputType = InputType.TYPE_CLASS_TEXT
+
+                formElements.attributes.selectedOptions?.let {
+                    if (it.isNotEmpty() && it[0].length > 1) {
+                        DropDownEditText.setText(
+                            formElements.attributes.selectedOptions.toString().replace("[", "")
+                                .replace("]", "")
+                        )
+                    } else {
+                        DropDownEditText.setText("")
+                    }
+                }
+
+                DropDownEditText.setOnClickListener {
+
+                    val inputManager =
+                        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputManager.hideSoftInputFromWindow(DropDownEditText.windowToken, 0)
+
+                    multiSelectDialog(DropDownEditText, formElements)
+                }
+
+                DropDownEditText.doAfterTextChanged {
+                    if (!it.isNullOrEmpty()) {
+                        formElements.attributes.valueListener!!.value = it.toString()
+                    }
+                }
+
+                formElements.attributes.subHeading?.let {
+                    DropDownSpacer.visibility = View.VISIBLE
+                    DropDownSubHeadingHolder.visibility = View.VISIBLE
+                    DropDownSubHeading.text = formElements.attributes.subHeading
+                } ?: run {
+                    DropDownSpacer.visibility = View.GONE
+                    DropDownSubHeadingHolder.visibility = View.GONE
+                }
+
+                formElements.attributes.heading?.let {
+                    DropDownHeading.visibility = View.VISIBLE
+                    DropDownHeading.text = formElements.attributes.heading
+                } ?: run {
+                    DropDownHeading.visibility = View.GONE
+                }
+
+                viewMap[formElements.attributes.tag] = DropDownEditText
+                addViewToView(DropDownLayout, DropDownView)
+                DropDownLayout
+            }
+
             else -> null
         }
     }

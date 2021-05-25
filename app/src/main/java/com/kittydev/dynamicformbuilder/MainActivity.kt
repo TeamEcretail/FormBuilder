@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         list.add("op3");
 
         val _etListner = MutableLiveData<String>()
-      /*  sas.add(
+        sas.add(
             FormElements().setArguments(
                 attributeDM(
                     tag = "et1",
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                     heading = "3 input sample",
                 )
             )
-        )*/
+        )
         _etListner.observe(this, Observer { it ->
             Log.e("kittydev", "Fromm Main Act : -->  " + it)
         })
