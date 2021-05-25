@@ -30,6 +30,6 @@ class FormElements : FormObject() {
         }
 
     enum class Type {
-        TEXT, SELECT, SLIDER, RATING, MULTISELECT, TWO_INPUT, THREE_INPUT
+        TEXT, SELECT, SLIDER, RATING, MULTISELECT, TWO_INPUT, THREE_INPUT,DUMMY
     }
 }
