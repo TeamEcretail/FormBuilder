@@ -483,10 +483,12 @@ class FormBuilder(
         )
         layoutParams.setMargins(8, 8, 8, 8)
         //view!!.layoutParams = params ?: layoutParams
+
         view?.let {
             it.layoutParams = params ?: layoutParams
             linearLayout.addView(view)
         }
+
 
     }
 
