@@ -457,19 +457,26 @@ class FormBuilder(
                 RatingLayout
             }
 
-
             FormElements.Type.MULTISELECT -> {
                 val DropDownView = LayoutInflater.from(context).inflate(R.layout.input, null)
+
                 val DropDownLayout = TextInputLayout(context, null, R.id.input_et_layout)
+
                 val DropDownLayoutHolder: TextInputLayout =
                     DropDownView.findViewById(R.id.input_et_layout)
+
                 val DropDownEditText: TextInputEditText = DropDownView.findViewById(R.id.input_et)
+
                 val DropDownHeading = DropDownView.findViewById<TextView>(R.id.input_et_Heading)
+
                 val DropDownSubHeading =
                     DropDownView.findViewById<TextView>(R.id.input_et_SubHeading)
+
                 val DropDownSpacer = DropDownView.findViewById<View>(R.id.input_et_spacer)
+
                 val DropDownSubHeadingHolder =
                     DropDownView.findViewById<LinearLayout>(R.id.subHeadingHolder)
+
                 DropDownLayoutHolder.hint = formElements.attributes.hint
                 DropDownEditText.isEnabled = formElements.attributes.isEnabled
 
@@ -480,6 +487,8 @@ class FormBuilder(
                 }
 
                 DropDownEditText.inputType = InputType.TYPE_CLASS_TEXT
+
+
 
                 formElements.attributes.selectedOptions?.let {
                     if (it.isNotEmpty() && it[0].length > 1) {
@@ -605,26 +614,27 @@ class FormBuilder(
         builder.show()
     }
 
+
     private fun multiSelectDialog(
         selectedEditText: EditText,
-        selectedFormElements: FormElements
+        selectedKittyElements: FormElements
     ) {
 
         var selectedElements: ArrayList<String> = ArrayList(listOf(""))
 
-        selectedFormElements.attributes.selectedOptions?.let {
+        selectedKittyElements.attributes.selectedOptions?.let {
             selectedElements = ArrayList(it)
         }
 
         this.selectedEditText = selectedEditText
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(selectedFormElements.attributes.hint)
+        builder.setTitle(selectedKittyElements.attributes.hint)
 
-        val options = selectedFormElements.attributes.options!!.toTypedArray()
+        val options = selectedKittyElements.attributes.options!!.toTypedArray()
 
-        val arrayChecked = selectedFormElements.attributes.selectedOptions?.let {
+        val arrayChecked = selectedKittyElements.attributes.selectedOptions?.let {
             getSelected(
-                selectedFormElements.attributes.options!!,
+                selectedKittyElements.attributes.options!!,
                 it
             )
         }
@@ -644,19 +654,17 @@ class FormBuilder(
                 Log.e("adad", "$i     $it")
 
                 if (it) {
-                    selectedElements.add(selectedFormElements.attributes.options!![i])
+                    selectedElements.add(selectedKittyElements.attributes.options!![i])
                 }
             }
 
-            selectedFormElements.attributes.selectedOptions = selectedElements.toList()
+            selectedKittyElements.attributes.selectedOptions = selectedElements.toList()
 
-            Log.e("akdjah", selectedFormElements.attributes.selectedOptions.toString())
+            Log.e("akdjah", selectedKittyElements.attributes.selectedOptions.toString().replace("[", "")
+                .replace("]", ""))
 
             selectedEditText.setText(
-
-
-                selectedFormElements.attributes.selectedOptions.toString().replace("[", "")
-                    .replace("]", "")
+                selectedKittyElements.attributes.selectedOptions.toString().replace("[", "").replace("]", "")
             )
         }
 
