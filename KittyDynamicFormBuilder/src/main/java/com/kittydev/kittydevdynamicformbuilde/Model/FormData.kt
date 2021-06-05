@@ -9,7 +9,7 @@ data class attributeDM(
     val tag: String,
     val type: FormElements.Type,
     val hint: String? = null,
-    val value:  MutableLiveData<String>? = null,
+    val value:  String? = null,
     val heading: String? = null,
     val subHeading: String? = null,
     val options: List<String>? = listOf(),

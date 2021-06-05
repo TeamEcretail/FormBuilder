@@ -32,13 +32,19 @@ class FormBuilder(
                 formObject.attributes_2 != null -> {
                     formObject.attributes_2?.let {
                         formMap[it.tag] = formObject
-                        addToLinearLayout(buildElement(formObject), formObject.attributes_2!!.params)
+                        addToLinearLayout(
+                            buildElement(formObject),
+                            formObject.attributes_2!!.params
+                        )
                     }
                 }
                 formObject.attributes_3 != null -> {
                     formObject.attributes_3?.let {
                         formMap[it.tag] = formObject
-                        addToLinearLayout(buildElement(formObject), formObject.attributes_3!!.params)
+                        addToLinearLayout(
+                            buildElement(formObject),
+                            formObject.attributes_3!!.params
+                        )
                     }
                 }
                 else -> {
@@ -109,9 +115,9 @@ class FormBuilder(
 
                 InputTextLayoutHolder.hint = formElements.attributes.hint
                 InputTextEditText.isEnabled = formElements.attributes.isEnabled
-                formElements.attributes.value?.observeForever {
-                    InputTextEditText.setText(it)
-                }
+
+                InputTextEditText.setText(formElements.attributes.value)
+
 
                 InputTextEditText.inputType = InputType.TYPE_CLASS_TEXT
                 viewMap[formElements.attributes.tag] = InputTextEditText
@@ -272,16 +278,14 @@ class FormBuilder(
 
                 InputTextEditText1.isEnabled = formElements.attributes.isEnabled
 
+                InputTextEditText1.setText(formElements.attributes.value)
 
-                formElements.attributes.value?.observeForever {
-                    InputTextEditText1.setText(it)
-                }
                 formElements.attributes_2?.let { ita ->
                     InputTextLayoutHolder2.hint = ita.hint
                     InputTextEditText2.isEnabled = ita.isEnabled
-                    ita.value?.observeForever {
-                        InputTextEditText2.setText(it)
-                    }
+
+                    InputTextEditText2.setText(ita.value)
+
                     viewMap[ita.tag] = InputTextEditText2
                 }
                 InputTextEditText1.inputType = InputType.TYPE_CLASS_TEXT
@@ -371,24 +375,23 @@ class FormBuilder(
                 InputTextEditText1.isEnabled = formElements.attributes.isEnabled
 
 
-                formElements.attributes.value?.observeForever {
-                    InputTextEditText1.setText(it)
-                }
+                InputTextEditText1.setText(formElements.attributes.value)
+
 
                 formElements.attributes_2?.let { ita ->
                     InputTextLayoutHolder2.hint = ita.hint
                     InputTextEditText2.isEnabled = ita.isEnabled
-                    ita.value?.observeForever {
-                        InputTextEditText2.setText(it)
-                    }
+
+                    InputTextEditText2.setText(ita.value)
+
                     viewMap[ita.tag] = InputTextEditText2
                 }
                 formElements.attributes_3?.let { ita ->
                     InputTextLayoutHolder3.hint = ita.hint
                     InputTextEditText3.isEnabled = ita.isEnabled
-                    ita.value?.observeForever {
-                        InputTextEditText3.setText(it)
-                    }
+
+                    InputTextEditText3.setText(ita.value)
+
                     viewMap[ita.tag] = InputTextEditText2
                 }
                 InputTextEditText1.inputType = InputType.TYPE_CLASS_TEXT
@@ -660,11 +663,15 @@ class FormBuilder(
 
             selectedKittyElements.attributes.selectedOptions = selectedElements.toList()
 
-            Log.e("akdjah", selectedKittyElements.attributes.selectedOptions.toString().replace("[", "")
-                .replace("]", ""))
+            Log.e(
+                "akdjah",
+                selectedKittyElements.attributes.selectedOptions.toString().replace("[", "")
+                    .replace("]", "")
+            )
 
             selectedEditText.setText(
-                selectedKittyElements.attributes.selectedOptions.toString().replace("[", "").replace("]", "")
+                selectedKittyElements.attributes.selectedOptions.toString().replace("[", "")
+                    .replace("]", "")
             )
         }
 

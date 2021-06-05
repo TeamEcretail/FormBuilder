@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity() {
                     isRefreshBtn = true,
                     drawable = R.drawable.ic_baseline_refresh_24,
                     refreshListener = _refreshListner,
-                    value = et,
                     heading = "Refresh sample"
                 )
             )
