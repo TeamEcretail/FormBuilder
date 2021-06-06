@@ -1,6 +1,6 @@
 # Kittydev Dynamic FormBulider
 
-| [![GitHub release](https://img.shields.io/github/release/KittyDev18/KittyDev-FormBuilder)](https://GitHub.com/KittyDev18/KittyDev-FormBuilder/releases/) | [![GitHub license](https://img.shields.io/github/license/KittyDev18/KittyDev-FormBuilder)](https://github.com/KittyDev18/KittyDev-FormBuilder/blob/master/LICENSE) |
+| [![GitHub release](https://img.shields.io/github/release/TeamEcretail/FormBuilder)](https://GitHub.com/TeamEcretail/FormBuilder/releases/) | [![GitHub license](https://img.shields.io/github/license/TeamEcretail/FormBuilder)](https://github.com/TeamEcretail/FormBuilder/blob/master/LICENSE) |
 |--|--|
 
 
